@@ -1,3 +1,5 @@
+import os
+
 import base64
 from io import BytesIO
 from pathlib import Path
@@ -38,6 +40,27 @@ CATEGORY_CLASSES = [
 
 IMAGE_SIZE = 224
 
+DB_PATH = Path(os.getenv("DB_PATH", "predictions.db"))
+
+def init_db():
+    with sqlite3.connect(DB_PATH) as conn:
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS predictions (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                filename TEXT,
+                category TEXT,
+                category_confidence REAL,
+                prediction TEXT,
+                confidence REAL,
+                created_at TEXT
+            )
+        """)
+
+        conn.commit()
+
+init_db()
 
 app = FastAPI(title="Visual Defect Detector API")
 
@@ -48,7 +71,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
 
 transform = transforms.Compose([
     transforms.Resize((IMAGE_SIZE, IMAGE_SIZE)),
@@ -189,26 +211,3 @@ def get_history():
         }
         for row in rows
     ]
-
-DB_PATH = Path("predictions.db")
-
-def init_db():
-    with sqlite3.connect(DB_PATH) as conn:
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            CREATE TABLE IF NOT EXISTS predictions (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                filename TEXT,
-                category TEXT,
-                category_confidence REAL,
-                prediction TEXT,
-                confidence REAL,
-                created_at TEXT
-            )
-        """)
-
-        conn.commit()
-
-
-init_db()
