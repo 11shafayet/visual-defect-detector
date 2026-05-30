@@ -1,0 +1,44 @@
+# Python
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.pytest_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Data
+data/
+outputs/
+notebooks/
+screenshots/
+
+# Models - ignore all model files by default
+*.pth
+
+# keeping deployment models
+!backend/saved_models/defect_detector_efficientnet_b0.pth
+!backend/saved_models/category_classifier_efficientnet_b0.pth
+
+# Node / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
